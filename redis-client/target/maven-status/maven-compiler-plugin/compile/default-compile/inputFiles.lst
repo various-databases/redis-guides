@@ -1,0 +1,5 @@
+/home/wanggang/develop/javawork/redis-guides/redis-client/src/main/java/zx/soft/redis/client/shard/ValueShardedJedisPool.java
+/home/wanggang/develop/javawork/redis-guides/redis-client/src/main/java/zx/soft/redis/client/shard/ValueShardedJedis.java
+/home/wanggang/develop/javawork/redis-guides/redis-client/src/main/java/zx/soft/redis/client/standone/impl/RedisStandoneClient.java
+/home/wanggang/develop/javawork/redis-guides/redis-client/src/main/java/zx/soft/redis/client/shard/impl/RedisShardClient.java
+/home/wanggang/develop/javawork/redis-guides/redis-client/src/main/java/zx/soft/redis/client/conf/Config.java
