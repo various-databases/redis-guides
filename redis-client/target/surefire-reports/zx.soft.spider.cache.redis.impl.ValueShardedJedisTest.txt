@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: zx.soft.spider.cache.redis.impl.ValueShardedJedisTest
--------------------------------------------------------------------------------
-Tests run: 2, Failures: 0, Errors: 0, Skipped: 2, Time elapsed: 0 sec - in zx.soft.spider.cache.redis.impl.ValueShardedJedisTest

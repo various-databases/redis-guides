@@ -1,7 +1,0 @@
-zx/soft/redis/client/standone/impl/RedisStandoneClient.class
-zx/soft/redis/client/conf/Config.class
-zx/soft/redis/client/shard/ValueShardedJedisPool$ShardedJedisFactory.class
-zx/soft/redis/client/conf/Config$1.class
-zx/soft/redis/client/shard/ValueShardedJedis.class
-zx/soft/redis/client/shard/impl/RedisShardClient.class
-zx/soft/redis/client/shard/ValueShardedJedisPool.class
