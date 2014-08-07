@@ -10,12 +10,12 @@ import java.util.List;
  */
 public interface ManagerHash {
 
-	public void addValue(String value);
+	public void addField(String field);
 
-	public boolean isExisted(String value);
+	public boolean isExisted(String field);
 
-	public List<String> getValues();
+	public List<String> getFields();
 
-	public void delValues(int timeSpan);
+	public void delFields(int timeSpan);
 
 }

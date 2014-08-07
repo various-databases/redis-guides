@@ -1,6 +1,8 @@
 package zx.soft.redis.client.hash;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,43 +23,73 @@ public class ManagerPersistHash implements ManagerHash {
 	private static Logger logger = LoggerFactory.getLogger(ManagerPersistHash.class);
 
 	// Hash表的主key
-	private final String KEY_NAME;
+	private final String keyName;
+
+	// 最大时间跨度，用于删除过期数据，毫秒单位
+	private final long maxSpanTime;
 
 	// Redis单机器客户端
 	private final Jedis jedis;
 
-	public ManagerPersistHash(Jedis jedis, String keyName) {
-		KEY_NAME = keyName;
+	/**
+	 * 初始化
+	 * @param jedis：redis客户端
+	 * @param keyName：键名
+	 * @param maxSpanTime：最大时间跨度，毫秒
+	 */
+	public ManagerPersistHash(Jedis jedis, String keyName, long maxSpanTime) {
+		this.keyName = keyName;
 		this.jedis = jedis;
+		this.maxSpanTime = maxSpanTime;
 	}
 
 	/**
 	 * 在集合中插入一条数据，并更新时间为当前的时间
 	 */
 	@Override
-	public void addValue(String value) {
-		//
+	public void addField(String field) {
+		try {
+			jedis.hset(keyName, field, System.currentTimeMillis() + "");
+		} catch (Exception e) {
+			logger.error("Exception:" + e);
+		}
 	}
 
 	/**
 	 * 判断value是否存在集合中
 	 */
 	@Override
-	public boolean isExisted(String value) {
-		//
-		return true;
+	public boolean isExisted(String field) {
+		try {
+			return jedis.hexists(keyName, field);
+		} catch (Exception e) {
+			logger.error("Exception:" + e);
+			return Boolean.FALSE;
+		}
 	}
 
 	/**
 	 * 删除距当前时间超过一定时间的值
 	 */
 	@Override
-	public void delValues(int timeSpan) {
-		//
+	public void delFields(int timeSpan) {
+		Set<String> fields = jedis.hkeys(keyName);
+		List<String> delFields = new ArrayList<>();
+		long currentTime = System.currentTimeMillis();
+		for (String field : fields) {
+			if (Long.parseLong(jedis.hget(keyName, field)) + maxSpanTime < currentTime) {
+				delFields.add(field);
+			}
+		}
+		try {
+			jedis.hdel(keyName, delFields.toArray(new String[delFields.size()]));
+		} catch (Exception e) {
+			logger.error("Exception:" + e);
+		}
 	}
 
 	@Override
-	public List<String> getValues() {
+	public List<String> getFields() {
 		// TODO Auto-generated method stub
 		return null;
 	}
