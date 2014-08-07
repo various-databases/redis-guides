@@ -16,6 +16,6 @@ public interface ManagerHash {
 
 	public List<String> getFields();
 
-	public void delFields(int timeSpan);
+	public void delFields(long timeSpan);
 
 }

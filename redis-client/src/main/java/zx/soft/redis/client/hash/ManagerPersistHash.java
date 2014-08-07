@@ -72,7 +72,7 @@ public class ManagerPersistHash implements ManagerHash {
 	 * 删除距当前时间超过一定时间的值
 	 */
 	@Override
-	public void delFields(int timeSpan) {
+	public void delFields(long timeSpan) {
 		Set<String> fields = jedis.hkeys(keyName);
 		List<String> delFields = new ArrayList<>();
 		long currentTime = System.currentTimeMillis();
@@ -90,8 +90,12 @@ public class ManagerPersistHash implements ManagerHash {
 
 	@Override
 	public List<String> getFields() {
-		// TODO Auto-generated method stub
-		return null;
+		Set<String> fields = jedis.hkeys(keyName);
+		List<String> result = new ArrayList<>();
+		for (String field : fields) {
+			result.add(field);
+		}
+		return result;
 	}
 
 }

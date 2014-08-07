@@ -1,6 +1,10 @@
 package zx.soft.redis.client.hash;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,16 +23,18 @@ import redis.clients.jedis.Jedis;
  *      3、每次add一个URL的时候，同时往Hash和Set里面add；
  *      4、每次获取生存周期为0的URL列表时，将Hash-Set（即diff(hash,set)）就可以得到，
  *         同时还需要将这个列表重新加入Set中，并设置同样的生存周期；
- *      5、定时根据Hash表中的每条记录的lasttiem与当前时间的差值删除该条记录。
+ *      5、定时根据Hash表中的每条记录的lasttime与当前时间的差值删除该条记录。
  *      
  * 具体实现细节：
  *      1、使用HSET设置URL:lasttime键值对，以及更新lasttime；
  *      2、使用SET设置URL:constant键值对；
  *      3、使用EXPIRE设置URL:expire键值对；
- *      4、使用SCAN匹配出所有的URL，即根据http*模糊匹配出所有未过期的URL列表，或者使用KEYS命令；
+ *      4、使用SCAN匹配出所有的URL，或者使用KEYS命令；
  *      5、使用HKEY获取所有field名，并与4中的URL列表做差集运算，得到过期的URL列表；
  *      6、在1中更新5中得到的URL的lasttime，并对这些URL进行2操作；
  *      7、返回5中的列表。
+ *      
+ * 这里的URL是指URL的MD5值。
  * 
  * @author wanggang
  *
@@ -46,9 +52,9 @@ public class ManagerExpiredHash implements ManagerHash {
 	private final Jedis jedis;
 
 	// 生存周期，毫秒
-	private final int expire;
+	private final long expire;
 
-	public ManagerExpiredHash(Jedis jedis, int expire, String keyName) {
+	public ManagerExpiredHash(Jedis jedis, long expire, String keyName) {
 		this.keyName = keyName;
 		this.expire = expire;
 		this.jedis = jedis;
@@ -63,7 +69,7 @@ public class ManagerExpiredHash implements ManagerHash {
 			jedis.hset(keyName, field, System.currentTimeMillis() + "");
 			// 2、同时设置该field的生存周期
 			jedis.set(field, ONE);
-			jedis.expire(key, seconds)
+			jedis.pexpire(field, expire);
 		} catch (Exception e) {
 			logger.error("Exception: " + e);
 		}
@@ -74,19 +80,47 @@ public class ManagerExpiredHash implements ManagerHash {
 	 */
 	@Override
 	public List<String> getFields() {
-		//
-		return null;
+		// Hash表中的所有field，即所有URL
+		Set<String> allFields = jedis.hkeys(keyName);
+		// Set中的key，即尚未达到过期时间的URL
+		Set<String> allKeys = jedis.keys("*");
+		// 提取差集
+		List<String> result = new ArrayList<>();
+		for (String field : allFields) {
+			if (!allKeys.contains(field)) {
+				result.add(field);
+				// 同时更新lasttime：若更新的话，几乎都是最新时间，所以暂不更新
+				//				jedis.hset(keyName, field, System.currentTimeMillis() + "");
+				// expire重置
+				jedis.pexpire(field, expire);
+			}
+		}
+
+		return result;
 	}
 
+	/**
+	 * 判断URL在Hash表中是否存在
+	 */
 	@Override
-	public boolean isExisted(String value) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean isExisted(String field) {
+		return jedis.hexists(keyName, field);
 	}
 
+	/**
+	 * 删除Hash表中，根据存入时间和当前的时间差来删除
+	 */
 	@Override
-	public void delFields(int timeSpan) {
-		// TODO Auto-generated method stub
+	public void delFields(long timeSpan) {
+		final long current = System.currentTimeMillis();
+		List<String> fields = new ArrayList<>();
+		Map<String, String> fieldAndKeys = jedis.hgetAll(keyName);
+		for (Entry<String, String> fieldAndKey : fieldAndKeys.entrySet()) {
+			if (Long.parseLong(fieldAndKey.getValue()) + timeSpan < current) {
+				fields.add(fieldAndKey.getKey());
+			}
+		}
+		jedis.hdel(keyName, fields.toArray(new String[fields.size()]));
 	}
 
 }
