@@ -5,12 +5,17 @@
 	<parent>
 		<groupId>zx.soft</groupId>
 		<artifactId>redis-parent</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1.0.0</version>
 		<relativePath>../redis-parent/pom.xml</relativePath>
 	</parent>
 
 	<artifactId>redis-client</artifactId>
 	<name>Redis Client</name>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.build.outputEncoding>UTF-8</project.build.outputEncoding>
+	</properties>
 
 	<dependencies>
 		<dependency>
@@ -84,9 +89,8 @@
 			</plugin>
 		</plugins>
 
-		<finalName>redis-client</finalName>
+		<finalName>${project.artifactId}-${project.version}</finalName>
 
 	</build>
-
 
 </project>
