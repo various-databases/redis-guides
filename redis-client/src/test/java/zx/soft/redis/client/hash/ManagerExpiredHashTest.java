@@ -20,7 +20,7 @@ public class ManagerExpiredHashTest {
 	private static String password;
 
 	private static final String KEY_NAME = "testdata";
-	private static final long MAX_SPAN_TIME = 3_000;
+	private static final long MAX_SPAN_TIME = 5_000;
 	private static final long EXPIRE = 2_000;
 
 	private static final String[] FIELDS = { "aaa", "bbb", "ccc" };
@@ -70,7 +70,7 @@ public class ManagerExpiredHashTest {
 			managerExpiredHash.addFields(FIELDS);
 			List<String> fields = managerExpiredHash.getFields();
 			assertTrue(fields.size() == 0);
-			Thread.sleep(2_000);
+			Thread.sleep(3_000);
 			fields = managerExpiredHash.getFields();
 			assertTrue(fields.size() == FIELDS.length);
 			jedis.del(KEY_NAME);
