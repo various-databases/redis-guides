@@ -12,10 +12,12 @@ public interface ManagerHash {
 
 	public void addField(String field);
 
+	public void addFields(String... fields);
+
 	public boolean isExisted(String field);
 
 	public List<String> getFields();
 
-	public void delFields(long timeSpan);
+	public void delFields();
 
 }

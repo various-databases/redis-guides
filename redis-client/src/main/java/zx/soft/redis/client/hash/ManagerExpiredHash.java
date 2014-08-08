@@ -54,10 +54,14 @@ public class ManagerExpiredHash implements ManagerHash {
 	// 生存周期，毫秒
 	private final long expire;
 
-	public ManagerExpiredHash(Jedis jedis, long expire, String keyName) {
+	// 最大时间跨度，用于删除过期数据，毫秒单位
+	private final long maxSpanTime;
+
+	public ManagerExpiredHash(Jedis jedis, String keyName, long expire, long maxSpanTime) {
+		this.jedis = jedis;
 		this.keyName = keyName;
 		this.expire = expire;
-		this.jedis = jedis;
+		this.maxSpanTime = maxSpanTime;
 	}
 
 	/**
@@ -72,6 +76,13 @@ public class ManagerExpiredHash implements ManagerHash {
 			jedis.pexpire(field, expire);
 		} catch (Exception e) {
 			logger.error("Exception: " + e);
+		}
+	}
+
+	@Override
+	public void addFields(String... fields) {
+		for (String field : fields) {
+			addField(field);
 		}
 	}
 
@@ -111,12 +122,12 @@ public class ManagerExpiredHash implements ManagerHash {
 	 * 删除Hash表中，根据存入时间和当前的时间差来删除
 	 */
 	@Override
-	public void delFields(long timeSpan) {
+	public void delFields() {
 		final long current = System.currentTimeMillis();
 		List<String> fields = new ArrayList<>();
 		Map<String, String> fieldAndKeys = jedis.hgetAll(keyName);
 		for (Entry<String, String> fieldAndKey : fieldAndKeys.entrySet()) {
-			if (Long.parseLong(fieldAndKey.getValue()) + timeSpan < current) {
+			if (Long.parseLong(fieldAndKey.getValue()) + maxSpanTime < current) {
 				fields.add(fieldAndKey.getKey());
 			}
 		}
