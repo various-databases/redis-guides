@@ -12,7 +12,7 @@ public class SetDemo {
 		jedis.set("foo", "bar");
 		String value = jedis.get("foo");
 		System.out.println(value);
-
+		jedis.close();
 	}
 
 }

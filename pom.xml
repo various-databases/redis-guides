@@ -2,20 +2,14 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>zx.soft</groupId>
-		<artifactId>redis-parent</artifactId>
-		<version>1.0.0</version>
-		<relativePath>redis-parent/pom.xml</relativePath>
-	</parent>
-
+	<groupId>zx.soft</groupId>
 	<artifactId>redis-guides</artifactId>
+	<version>1.0.0</version>
 	<packaging>pom</packaging>
 	<name>Redis Guides</name>
 	<description>Redis Client Guides</description>
 
 	<modules>
-		<module>redis-parent</module>
 		<module>redis-client</module>
 		<module>redis-demo</module>
 	</modules>

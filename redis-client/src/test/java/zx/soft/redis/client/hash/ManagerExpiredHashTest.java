@@ -12,7 +12,7 @@ import org.junit.Test;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
-import zx.soft.redis.client.conf.Config;
+import zx.soft.redis.client.common.Config;
 
 public class ManagerExpiredHashTest {
 
@@ -27,8 +27,8 @@ public class ManagerExpiredHashTest {
 
 	@BeforeClass
 	public static void prepare() {
-		pool = new JedisPool(new JedisPoolConfig(), Config.get("redisServers"));
-		password = Config.get("password");
+		pool = new JedisPool(new JedisPoolConfig(), Config.get("redis.servers"));
+		password = Config.get("redis.password");
 	}
 
 	@AfterClass

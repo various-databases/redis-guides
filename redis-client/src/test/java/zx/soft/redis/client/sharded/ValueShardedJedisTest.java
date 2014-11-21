@@ -1,4 +1,4 @@
-package zx.soft.spider.cache.redis.impl;
+package zx.soft.redis.client.sharded;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -13,10 +13,11 @@ import org.junit.Test;
 
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.JedisShardInfo;
-import zx.soft.redis.client.conf.Config;
-import zx.soft.redis.client.shard.ValueShardedJedis;
-import zx.soft.redis.client.shard.ValueShardedJedisPool;
+import zx.soft.redis.client.common.Config;
+import zx.soft.redis.client.sharded.ValueShardedJedis;
+import zx.soft.redis.client.sharded.ValueShardedJedisPool;
 
+@Ignore
 public class ValueShardedJedisTest {
 
 	List<JedisShardInfo> shards;
@@ -31,7 +32,7 @@ public class ValueShardedJedisTest {
 	@Before
 	public void setUp() {
 		shards = new ArrayList<JedisShardInfo>();
-		String password = Config.get("password");
+		String password = Config.get("redis.password");
 		JedisShardInfo jsi1 = new JedisShardInfo("127.0.0.1", 6381);
 		jsi1.setPassword(password);
 		JedisShardInfo jsi2 = new JedisShardInfo("127.0.0.1", 6382);

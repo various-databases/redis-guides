@@ -1,4 +1,4 @@
-package zx.soft.spider.cache.redis.client;
+package zx.soft.redis.client.standalone;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -6,24 +6,25 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.exceptions.JedisDataException;
-import zx.soft.redis.client.conf.Config;
+import zx.soft.redis.client.common.Config;
 
-public class RedisTest {
+@Ignore
+public class JedisPoolTest {
 
-	JedisPool pool = new JedisPool(new JedisPoolConfig(), Config.get("redisServers"));
+	JedisPool pool = new JedisPool(new JedisPoolConfig(), Config.get("redis.servers"), Integer.parseInt(Config
+			.get("redis.port")), 2_000, Config.get("redis.password"));
 
-	final String PASSWORD = Config.get("password");
 
 	@Test
 	public void test() {
 		Jedis jedis = pool.getResource();
-		jedis.auth(PASSWORD);
 		try {
 			/// ... do stuff here ... for example
 			jedis.set("foo", "bar");
@@ -42,7 +43,6 @@ public class RedisTest {
 	@Test
 	public void testErval() {
 		Jedis jedis = pool.getResource();
-		jedis.auth(PASSWORD);
 		jedis.del("s");
 		try {
 			Object result = jedis.eval("return 'hello world'");
@@ -62,7 +62,6 @@ public class RedisTest {
 	@Test
 	public void testEval2() {
 		Jedis jedis = pool.getResource();
-		jedis.auth(PASSWORD);
 		jedis.del("s1", "s2", "s3");
 		try {
 			jedis.sadd("s1", "1", "2", "3");
@@ -87,7 +86,6 @@ public class RedisTest {
 	@Test
 	public void testEval3() {
 		Jedis jedis = pool.getResource();
-		jedis.auth(PASSWORD);
 		jedis.del("s1", "s2", "s3");
 		try {
 			jedis.sadd("s1", "1", "2", "3");
@@ -119,7 +117,6 @@ public class RedisTest {
 	@Test(expected = JedisDataException.class)
 	public void testEvalsha() {
 		Jedis jedis = pool.getResource();
-		jedis.auth(PASSWORD);
 		jedis.del("s1", "s2", "s3");
 		try {
 			jedis.evalsha("ffffffffffffffffffffffffffffffffffffffff", 3, "s1", "s2", "s3", "1", "3", "4", "6", "8");
@@ -132,7 +129,6 @@ public class RedisTest {
 	@Test
 	public void testEvalsha2() {
 		Jedis jedis = pool.getResource();
-		jedis.auth(PASSWORD);
 		jedis.del("s1", "s2", "s3");
 		final String src = "local count = 0\n" //
 				+ "for i, uid in ipairs(ARGV) do\n" //
@@ -159,8 +155,6 @@ public class RedisTest {
 	public void testSet() {
 		Jedis jedis1 = pool.getResource();
 		Jedis jedis2 = pool.getResource();
-		jedis1.auth(PASSWORD);
-		jedis2.auth(PASSWORD);
 		jedis1.del("s");
 		try {
 			jedis1.sadd("s", "1");
