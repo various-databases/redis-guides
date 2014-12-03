@@ -20,6 +20,9 @@ public class ShardRedisDemo {
 		System.out.println(redisCache.scard(key));
 		System.out.println(redisCache.smembers(key));
 
+		String listkey = "record_list_key";
+		redisCache.sadd(key, members);
+		redisCache.lpush(listkey, members);
 	}
 
 }

@@ -102,6 +102,19 @@ public interface Cache {
 	Long hset(String key, String field, String value);
 
 	/**
+	 * 将一个或多个member元素加到List key当中，全部都会写入
+	 * @param key
+	 * @param members 对应值
+	 */
+	void lpush(String key, String... members);
+
+	/**
+	 * 移除并返回List中的一个数
+	 * @param key
+	 */
+	String rpop(String key);
+
+	/**
 	 * 返回哈希表 key 中给定域 field 的值。
 	 * @param key
 	 * @param field

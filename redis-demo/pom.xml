@@ -4,50 +4,19 @@
 
 	<parent>
 		<groupId>zx.soft</groupId>
-		<artifactId>common-parent</artifactId>
-		<version>1.0.0</version>
+		<artifactId>redis-guides</artifactId>
+		<version>1.3.0</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<artifactId>redis-demo</artifactId>
 	<name>Redis Demo</name>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.build.outputEncoding>UTF-8</project.build.outputEncoding>
-	</properties>
-
 	<dependencies>
 		<dependency>
-			<groupId>redis.clients</groupId>
-			<artifactId>jedis</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.redisson</groupId>
-			<artifactId>redisson</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.github.jedis-lock</groupId>
-			<artifactId>jedis-lock</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.github.jedis-lock</groupId>
-			<artifactId>jedis-lock</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-collections</groupId>
-			<artifactId>commons-collections</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-core-asl</artifactId>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>redis-client</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 		<!-- 日志包 -->
 		<dependency>
@@ -66,6 +35,7 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
+		<!-- 测试包 -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -74,31 +44,7 @@
 	</dependencies>
 
 	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-
 		<finalName>${project.artifactId}-${project.version}</finalName>
-
 	</build>
 
 </project>

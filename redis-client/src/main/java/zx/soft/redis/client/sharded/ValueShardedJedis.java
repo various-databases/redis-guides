@@ -234,8 +234,16 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 	}
 
 	@Override
-	public Long lpush(String key, String... string) {
-		throw new UnsupportedOperationException();
+	public Long lpush(String key, String... members) {
+		if (members.length == 1) {
+			return getShard(members[0]).lpush(key, members[0]);
+		}
+
+		long result = 0;
+		for (Entry<Jedis, List<String>> entry : getShards(members)) {
+			result += entry.getKey().lpush(key, entry.getValue().toArray(new String[entry.getValue().size()]));
+		}
+		return result;
 	}
 
 	@Override
@@ -260,7 +268,20 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 
 	@Override
 	public String rpop(String key) {
-		throw new UnsupportedOperationException();
+		// 随机选择一个shard
+		Jedis jedis = allShards[random.nextInt(allShards.length)];
+		String result = jedis.rpop(key);
+		if (result != null) {
+			return result;
+		}
+
+		// 如果碰巧随机到的shard中没有数据，则继续随机剩下所有的shard
+		List<Jedis> js = new ArrayList<Jedis>();
+		for (Jedis j : allShards) {
+			js.add(j);
+		}
+		js.remove(jedis);
+		return rpop(key, js);
 	}
 
 	@Override
@@ -591,6 +612,26 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 			ms.add(member);
 		}
 		return jedisMembersMap.entrySet();
+	}
+
+	/**
+	 *
+	 * @param key
+	 * @param jedises
+	 * @return
+	 */
+	private String rpop(String key, List<Jedis> jedises) {
+		if (jedises.isEmpty()) {
+			return null;
+		}
+		int index = random.nextInt(jedises.size());
+		Jedis jedis = jedises.get(index);
+		String result = jedis.rpop(key);
+		if (result != null) {
+			return result;
+		}
+		jedises.remove(index);
+		return rpop(key, jedises);
 	}
 
 	private String spop(String key, List<Jedis> jedises) {

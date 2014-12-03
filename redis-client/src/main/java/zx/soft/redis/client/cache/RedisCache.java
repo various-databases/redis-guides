@@ -195,4 +195,24 @@ public class RedisCache implements Cache {
 		pool.destroy();
 	}
 
+	@Override
+	public void lpush(String key, String... members) {
+		ValueShardedJedis jedis = pool.getResource();
+		try {
+			jedis.lpush(key, members);
+		} finally {
+			pool.returnResource(jedis);
+		}
+	}
+
+	@Override
+	public String rpop(String key) {
+		ValueShardedJedis jedis = pool.getResource();
+		try {
+			return jedis.rpop(key);
+		} finally {
+			pool.returnResource(jedis);
+		}
+	}
+
 }
