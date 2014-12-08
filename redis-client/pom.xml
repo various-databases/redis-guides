@@ -55,9 +55,7 @@
 				</executions>
 			</plugin>
 		</plugins>
-
 		<finalName>${project.artifactId}-${project.version}</finalName>
-
 	</build>
 
 	<reporting>

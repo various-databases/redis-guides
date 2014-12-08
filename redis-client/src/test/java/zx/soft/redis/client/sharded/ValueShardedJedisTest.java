@@ -1,84 +1,73 @@
 package zx.soft.redis.client.sharded;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
-import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
-import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.JedisShardInfo;
 import zx.soft.redis.client.common.Config;
-import zx.soft.redis.client.sharded.ValueShardedJedis;
-import zx.soft.redis.client.sharded.ValueShardedJedisPool;
 
-@Ignore
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ValueShardedJedisTest {
 
-	List<JedisShardInfo> shards;
-
-	ValueShardedJedisPool pool;
-
-	@After
-	public void down() {
-		pool.destroy();
-	}
+	ValueShardedJedis shardedJedis = null;
+	String[] string_key = { "string1:test", "string2:test", "string3:test", "string4:test", "string5:test",
+			"string6:test", "string7:test", "string8:test" };
+	String set_key = "set:test";
+	String[] string_value = { "string1:test", "string2:test", "string3:test", "string4:test", "string5:test",
+			"string6:test", "string7:test", "string8:test" };
+	String[] value = { "测试数据001", "测试数据002", "数据测试003", "数据测试004", "据数实测005", "据数实测006", "测试数据007", "测试数据008",
+			"数据测试009", "数据测试010", "据数实测011", "据数实测012" };
 
 	@Before
 	public void setUp() {
-		shards = new ArrayList<JedisShardInfo>();
-		String password = Config.get("redis.password");
-		JedisShardInfo jsi1 = new JedisShardInfo("127.0.0.1", 6381);
-		jsi1.setPassword(password);
-		JedisShardInfo jsi2 = new JedisShardInfo("127.0.0.1", 6382);
-		jsi1.setPassword(password);
-		JedisShardInfo jsi3 = new JedisShardInfo("127.0.0.1", 6383);
-		jsi1.setPassword(password);
-		JedisShardInfo jsi4 = new JedisShardInfo("127.0.0.1", 6384);
-		jsi1.setPassword(password);
-		shards.add(jsi1);
-		shards.add(jsi2);
-		shards.add(jsi3);
-		shards.add(jsi4);
-		pool = new ValueShardedJedisPool(new JedisPoolConfig(), shards);
+		List<JedisShardInfo> jdsInfoList = new ArrayList<JedisShardInfo>();
+		Properties properties = Config.getProps("cache-config.properties");
+		String Servers = properties.getProperty("redis.servers");
+		String[] redisServers = Servers.split(",");
+		int redisPort = Integer.parseInt(properties.getProperty("redis.port"));
+		String password = properties.getProperty("redis.password");
+		JedisShardInfo jedis1 = new JedisShardInfo(redisServers[0], redisPort);
+		JedisShardInfo jedis2 = new JedisShardInfo(redisServers[1], redisPort);
+		JedisShardInfo jedis3 = new JedisShardInfo(redisServers[2], redisPort);
+		jedis1.setPassword(password);
+		jedis2.setPassword(password);
+		jedis3.setPassword(password);
+
+		jdsInfoList.add(jedis1);
+		jdsInfoList.add(jedis2);
+		jdsInfoList.add(jedis3);
+		shardedJedis = new ValueShardedJedis(jdsInfoList);
 	}
 
 	@Test
-	@Ignore
-	public void testBalance() {
-		ValueShardedJedis resource = pool.getResource();
-		String key = "ValueShardedJedisTest:1";
-		resource.del(key);
-
-		long count = 0;
-		for (int i = 0; i < 40000; i++) {
-			count += resource.sadd(key, String.valueOf(i));
-		}
-		assertEquals(40000, count);
-
-		for (JedisShardInfo info : shards) {
-			count = info.createResource().scard(key);
-			assertTrue(count > 9000 && count < 11000);
-			// System.out.println(info.createResource().scard(key));
-		}
+	public void string01_testSet() {
+		shardedJedis.set(string_key[0], string_value[0]);
+		shardedJedis.set(string_key[1], string_value[1]);
+		shardedJedis.set(string_key[2], string_value[2]);
+		shardedJedis.set(string_key[3], string_value[3]);
+		shardedJedis.set(string_key[4], string_value[4]);
+		shardedJedis.set(string_key[5], string_value[5]);
+		shardedJedis.set(string_key[6], string_value[6]);
+		shardedJedis.set(string_key[7], string_value[7]);
+		assertEquals(0, 0);
 	}
 
 	@Test
-	@Ignore
-	public void testDel() {
-		ValueShardedJedis resource = pool.getResource();
-
-		final String key = "ValueShardedJedisTest:NoThisKey";
-		assertEquals(new Long(0), resource.del(key));
-		resource.sadd(key, "1");
-		assertEquals(new Long(1), resource.del(key));
-		assertEquals(new Long(0), resource.del(key));
+	public void string02_testDel() {
+		assertEquals(1, shardedJedis.del(string_key[5]).longValue());
 	}
+
+	//	@Test
+	//	public void testSadd() {
+	//		assertEquals(0L, shardedJedis.sadd(set_key, value).longValue());
+	//	}
 
 }
-

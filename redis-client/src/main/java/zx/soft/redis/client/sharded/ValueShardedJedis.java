@@ -27,7 +27,7 @@ import redis.clients.util.Sharded;
  *     这里的Redis主要是存放舆情数据的id，所以基本上在少量集和中，
  *     也就是每个集和的数据量很大，而不是集和很多，所以应该针对每个
  *     集和的value进行分片。
- *     
+ *
  * @author wanggang
  *
  */
@@ -49,19 +49,48 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 		allShards = getAllShards().toArray(new Jedis[0]);
 	}
 
+	/**
+	 * add by Jimbo
+	 * 存在两种情况
+	 * 1：已经存在key，则在已经存在的值结尾加“value”字符串
+	 * 2：不存在key，创建key并将value存入key中
+	 */
 	@Override
 	public Long append(String key, String value) {
-		throw new UnsupportedOperationException();
+		Long result = 0L;
+		for (Jedis jedis : allShards) {
+			result = jedis.append(key, value);
+		}
+		return result;
 	}
 
+	/**
+	 * ADD BY Jimbo
+	 * @param key
+	 * @return
+	 */
 	@Override
 	public Long decr(String key) {
-		throw new UnsupportedOperationException();
+		Long result = 0L;
+		for (Jedis jedis : allShards) {
+			result = jedis.decr(key);
+		}
+		return result;
 	}
 
+	/**
+	 * Add By Jimbo
+	 * @param key
+	 * @param integer
+	 * @return
+	 */
 	@Override
 	public Long decrBy(String key, long integer) {
-		throw new UnsupportedOperationException();
+		Long result = 0L;
+		for (Jedis jedis : allShards) {
+			result = jedis.decrBy(key, integer);
+		}
+		return result;
 	}
 
 	/**
@@ -89,51 +118,126 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 		}
 	}
 
+	/**
+	 * add by Jimbo
+	 * @param key
+	 * @return
+	 */
 	@Override
 	public Boolean exists(String key) {
-		throw new UnsupportedOperationException();
-
+		Boolean result = false;
+		for (Jedis jedis : allShards) {
+			result = jedis.exists(key);
+			if (result == true) {
+				break;
+			}
+		}
+		return result;
 	}
 
+	/**
+	 * add by Jimbo
+	 * 为key设置超时时间
+	 */
 	@Override
 	public Long expire(String key, int seconds) {
-		throw new UnsupportedOperationException();
+		Long result = 0L;
+		for (Jedis jedis : allShards) {
+			result = jedis.expire(key, seconds);
+		}
+		return result;
 	}
 
+	/**
+	 * add by jimbo
+	 */
 	@Override
 	public Long expireAt(String key, long unixTime) {
-		throw new UnsupportedOperationException();
-
+		Long result = 0L;
+		for (Jedis jedis : allShards) {
+			result = jedis.expireAt(key, unixTime);
+		}
+		return result;
 	}
 
+	/**
+	 * add by jimbo
+	 */
 	@Override
 	public String get(String key) {
-		throw new UnsupportedOperationException();
+		String result = null;
+		for (Jedis jedis : allShards) {
+			result = jedis.get(key);
+			if (result != null) {
+				break;
+			}
+		}
+		return result;
 	}
 
+	/**
+	 * add by jimbo
+	 */
 	@Override
 	public Boolean getbit(String key, long offset) {
-		throw new UnsupportedOperationException();
+		Boolean result = false;
+		for (Jedis jedis : allShards) {
+			result = jedis.getbit(key, offset);
+		}
+		return result;
 	}
 
+	/**
+	 * add by jimbo
+	 */
 	@Override
 	public String getrange(String key, long startOffset, long endOffset) {
-		throw new UnsupportedOperationException();
+		String result = null;
+		for (Jedis jedis : allShards) {
+			result = jedis.getrange(key, startOffset, endOffset);
+		}
+		return result;
 	}
 
+	/**
+	 * add by jimbo
+	 */
 	@Override
 	public String getSet(String key, String value) {
-		throw new UnsupportedOperationException();
+		String result = null;
+		for (Jedis jedis : allShards) {
+			result = jedis.getSet(key, value);
+		}
+		return result;
 	}
 
+	/**
+	 * add by Jimbo
+	 * 删除hash存储，中的key-value对
+	 */
 	@Override
 	public Long hdel(String key, String... field) {
-		throw new UnsupportedOperationException();
+		Long result = 0L;
+		for (Jedis jedis : allShards) {
+			result += jedis.hdel(key, field);
+		}
+		return result;
 	}
 
+	/**
+	 * add by Jimbo
+	 * 判断hash存储中是否包含某一值
+	 */
 	@Override
 	public Boolean hexists(String key, String field) {
-		throw new UnsupportedOperationException();
+		Boolean result = false;
+		for (Jedis jedis : allShards) {
+			result = jedis.hexists(key, field);
+			if (result == true) {
+				break;
+			}
+		}
+		return result;
 	}
 
 	@Override
@@ -173,9 +277,16 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 		throw new UnsupportedOperationException();
 	}
 
+	/**
+	 * add by Jimbo
+	 */
 	@Override
 	public Long hlen(String key) {
-		throw new UnsupportedOperationException();
+		Long result = 0L;
+		for (Jedis jedis : allShards) {
+			result += jedis.hlen(key);
+		}
+		return result;
 	}
 
 	@Override
@@ -311,9 +422,14 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 		return result;
 	}
 
+	/**
+	 * add by Jimbo
+	 */
 	@Override
 	public String set(String key, String value) {
-		throw new UnsupportedOperationException();
+		String result = null;
+		result = getShard(value).set(key, value);
+		return result;
 	}
 
 	@Override
@@ -702,9 +818,16 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 		throw new UnsupportedOperationException();
 	}
 
+	/**
+	 * add by Jimbo
+	 */
 	@Override
 	public Long del(String key) {
-		throw new UnsupportedOperationException();
+		Long result = 0L;
+		for (Jedis jedis : allShards) {
+			result = jedis.del(key);
+		}
+		return result;
 	}
 
 	@Override
