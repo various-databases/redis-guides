@@ -58,47 +58,61 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 	@Override
 	public Long append(String key, String value) {
 		Long result = 0L;
-		for (Jedis jedis : allShards) {
-			result = jedis.append(key, value);
+		if (this.exists(key)) {
+			String newValue = this.get(key) + value;
+			this.set(key, newValue);
+			result += 1L;
+		} else {
+			this.set(key, value);
+			result += 1L;
 		}
 		return result;
 	}
 
 	/**
-	 * ADD BY Jimbo
-	 * @param key
-	 * @return
+	 * add by Jimbo
+	 * 经测试
 	 */
 	@Override
 	public Long decr(String key) {
 		Long result = 0L;
-		for (Jedis jedis : allShards) {
-			result = jedis.decr(key);
+		if (this.exists(key)) {
+			Long newValue = Long.valueOf(this.get(key)).longValue() - 1;
+			this.del(key);
+			this.set(key, newValue.toString());
+			result = newValue.longValue();
+		} else {
+			this.set(key, "-1");
+			result = -1L;
 		}
 		return result;
 	}
 
 	/**
 	 * Add By Jimbo
-	 * @param key
-	 * @param integer
-	 * @return
+	 * 经测试
 	 */
 	@Override
 	public Long decrBy(String key, long integer) {
 		Long result = 0L;
-		for (Jedis jedis : allShards) {
-			result = jedis.decrBy(key, integer);
+		if (this.exists(key)) {
+			Long newValue = Long.valueOf(this.get(key)).longValue() - integer;
+			this.del(key);
+			this.set(key, newValue.toString());
+			result = newValue;
+		} else {
+			this.set(key, "-" + String.valueOf(integer));
+			result = -integer;
 		}
 		return result;
 	}
 
 	/**
+	 * add by Jimbo
 	 *  根据一组key，删除对应的集和。
 	 *  对于同一个集和下面的数据可能分布式所有shard上，
 	 *  所以需要循环每个shard删除对应的key集和。
-	 * @param keys
-	 * @return
+	 *  经测试
 	 */
 	public Long del(String... keys) {
 		long result = 0;
@@ -120,8 +134,7 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 
 	/**
 	 * add by Jimbo
-	 * @param key
-	 * @return
+	 * 经测试
 	 */
 	@Override
 	public Boolean exists(String key) {
@@ -162,6 +175,7 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 
 	/**
 	 * add by jimbo
+	 * 经测试
 	 */
 	@Override
 	public String get(String key) {
@@ -187,26 +201,25 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 		return result;
 	}
 
-	/**
-	 * add by jimbo
-	 */
 	@Override
 	public String getrange(String key, long startOffset, long endOffset) {
-		String result = null;
-		for (Jedis jedis : allShards) {
-			result = jedis.getrange(key, startOffset, endOffset);
-		}
-		return result;
+		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * add by jimbo
+	 * 经测试
 	 */
 	@Override
 	public String getSet(String key, String value) {
 		String result = null;
-		for (Jedis jedis : allShards) {
-			result = jedis.getSet(key, value);
+		if (this.exists(key)) {
+			result = this.get(key);
+			this.del(key);
+			this.set(key, value);
+		} else {
+			result = null;
+			this.set(key, value);
 		}
 		return result;
 	}
@@ -227,6 +240,7 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 	/**
 	 * add by Jimbo
 	 * 判断hash存储中是否包含某一值
+	 * 经测试
 	 */
 	@Override
 	public Boolean hexists(String key, String field) {
@@ -267,14 +281,35 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 		return result;
 	}
 
+	/**
+	 * add by Jimbo
+	 * 这里功能暂时不管
+	 */
 	@Override
 	public Long hincrBy(String key, String field, long value) {
-		throw new UnsupportedOperationException();
+		Long result = 0L;
+		if (this.hexists(key, field)) {
+			this.hget(key, field);
+		} else {
+			this.hset(key, field, Long.toString(value));
+			result = value;
+		}
+		return result;
 	}
 
+	/**
+	 * add by Jimbo
+	 * 未测试
+	 */
 	@Override
 	public Set<String> hkeys(String key) {
-		throw new UnsupportedOperationException();
+		Set<String> result = null;
+		if (this.exists(key)) {
+			for (Jedis jedis : allShards) {
+				result.addAll(jedis.hkeys(key));
+			}
+		}
+		return result;
 	}
 
 	/**
@@ -299,6 +334,9 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 		throw new UnsupportedOperationException();
 	}
 
+	/**
+	 * 经测试
+	 */
 	@Override
 	public Long hset(String key, String field, String value) {
 		return getShard(value).hset(key, field, value);
@@ -314,14 +352,38 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 		throw new UnsupportedOperationException();
 	}
 
+	/**
+	 * add by Jimbo
+	 *  经测试
+	 */
 	@Override
 	public Long incr(String key) {
-		throw new UnsupportedOperationException();
+		Long result = 0L;
+		if (this.exists(key)) {
+			Long newValue = Long.valueOf(this.get(key)).longValue() + 1;
+			this.del(key);
+			this.set(key, newValue.toString());
+			result = newValue.longValue();
+		} else {
+			this.set(key, "1");
+			result = 1L;
+		}
+		return result;
 	}
 
 	@Override
 	public Long incrBy(String key, long integer) {
-		throw new UnsupportedOperationException();
+		Long result = 0L;
+		if (this.exists(key)) {
+			Long newValue = Long.valueOf(this.get(key)).longValue() + integer;
+			this.del(key);
+			this.set(key, newValue.toString());
+			result = newValue;
+		} else {
+			this.set(key, String.valueOf(integer));
+			result = integer;
+		}
+		return result;
 	}
 
 	@Override
@@ -349,7 +411,6 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 		if (members.length == 1) {
 			return getShard(members[0]).lpush(key, members[0]);
 		}
-
 		long result = 0;
 		for (Entry<Jedis, List<String>> entry : getShards(members)) {
 			result += entry.getKey().lpush(key, entry.getValue().toArray(new String[entry.getValue().size()]));
@@ -424,6 +485,7 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 
 	/**
 	 * add by Jimbo
+	 *  经测试
 	 */
 	@Override
 	public String set(String key, String value) {
@@ -731,10 +793,7 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 	}
 
 	/**
-	 *
-	 * @param key
-	 * @param jedises
-	 * @return
+	 * 从
 	 */
 	private String rpop(String key, List<Jedis> jedises) {
 		if (jedises.isEmpty()) {
@@ -750,6 +809,9 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 		return rpop(key, jedises);
 	}
 
+	/**
+	 * 随机删除一个值
+	 */
 	private String spop(String key, List<Jedis> jedises) {
 		if (jedises.isEmpty()) {
 			return null;
