@@ -301,6 +301,7 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 	 * add by Jimbo
 	 * 未测试
 	 */
+	@SuppressWarnings("null")
 	@Override
 	public Set<String> hkeys(String key) {
 		Set<String> result = null;
@@ -309,11 +310,13 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 				result.addAll(jedis.hkeys(key));
 			}
 		}
+		System.out.println(result);
 		return result;
 	}
 
 	/**
 	 * add by Jimbo
+	 * 已测试
 	 */
 	@Override
 	public Long hlen(String key) {
@@ -335,26 +338,45 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 	}
 
 	/**
-	 * 经测试
+	 * 已测试
 	 */
 	@Override
 	public Long hset(String key, String field, String value) {
 		return getShard(value).hset(key, field, value);
 	}
 
+	/**
+	 * add by Jimbo
+	 * return 如果hash中已经存在该field返回0
+	 * 			  如果不存在设置该值为value并返回1
+	 * 已测试
+	 */
 	@Override
 	public Long hsetnx(String key, String field, String value) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public List<String> hvals(String key) {
-		throw new UnsupportedOperationException();
+		long result = 0L;
+		if (!this.hexists(key, field)) {
+			this.hset(key, field, value);
+			result = 1L;
+		}
+		return result;
 	}
 
 	/**
 	 * add by Jimbo
-	 *  经测试
+	 * 已测试
+	 */
+	@Override
+	public List<String> hvals(String key) {
+		List<String> result = new ArrayList<>();
+		for (Jedis jedis : allShards) {
+			result.addAll(jedis.hvals(key));
+		}
+		return result;
+	}
+
+	/**
+	 * add by Jimbo
+	 *  已测试
 	 */
 	@Override
 	public Long incr(String key) {
@@ -401,19 +423,53 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 		throw new UnsupportedOperationException();
 	}
 
+	/**
+	 * add by Jimbo
+	 *
+	 */
 	@Override
 	public String lpop(String key) {
-		throw new UnsupportedOperationException();
+		// 随机选择一个shard
+		Jedis jedis = allShards[random.nextInt(allShards.length)];
+		String result = jedis.lpop(key);
+		if (result != null) {
+			return result;
+		}
+
+		// 如果碰巧随机到的shard中没有数据，则继续随机剩下所有的shard
+		List<Jedis> js = new ArrayList<Jedis>();
+		for (Jedis j : allShards) {
+			js.add(j);
+		}
+		js.remove(jedis);
+		return lpop(key, js);
 	}
 
+	public String lpop(String key, List<Jedis> jedises) {
+		if (jedises.isEmpty()) {
+			return null;
+		}
+		int index = random.nextInt(jedises.size());
+		Jedis jedis = jedises.get(index);
+		String result = jedis.lpop(key);
+		if (result != null) {
+			return result;
+		}
+		jedises.remove(index);
+		return lpop(key, jedises);
+	}
+
+	/**
+	 * 已测试
+	 */
 	@Override
 	public Long lpush(String key, String... members) {
+		Long result = (long) members.length;
 		if (members.length == 1) {
-			return getShard(members[0]).lpush(key, members[0]);
+			getShard(members[0]).lpush(key, members[0]);
 		}
-		long result = 0;
 		for (Entry<Jedis, List<String>> entry : getShards(members)) {
-			result += entry.getKey().lpush(key, entry.getValue().toArray(new String[entry.getValue().size()]));
+			entry.getKey().lpush(key, entry.getValue().toArray(new String[entry.getValue().size()]));
 		}
 		return result;
 	}
@@ -456,11 +512,25 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 		return rpop(key, js);
 	}
 
+	/**
+	 * add by Jimbo
+	 * 已测试
+	 */
 	@Override
-	public Long rpush(String key, String... string) {
-		throw new UnsupportedOperationException();
+	public Long rpush(String key, String... members) {
+		Long result = (long) members.length;
+		if (members.length == 1) {
+			getShard(members[0]).rpush(key, members[0]);
+		}
+		for (Entry<Jedis, List<String>> entry : getShards(members)) {
+			entry.getKey().rpush(key, entry.getValue().toArray(new String[entry.getValue().size()]));
+		}
+		return result;
 	}
 
+	/**
+	 * 已测试
+	 */
 	@Override
 	public Long sadd(String key, String... members) {
 		if (members.length == 1) {
@@ -474,6 +544,9 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 		return result;
 	}
 
+	/**
+	 * 已测试
+	 */
 	@Override
 	public Long scard(String key) {
 		long result = 0;
@@ -514,11 +587,17 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 		throw new UnsupportedOperationException();
 	}
 
+	/**
+	 * 已测试
+	 */
 	@Override
 	public Boolean sismember(String key, String member) {
 		return getShard(member).sismember(key, member);
 	}
 
+	/**
+	 * 已测试
+	 */
 	@Override
 	public Set<String> smembers(String key) {
 		Set<String> result = new HashSet<String>();
@@ -538,6 +617,9 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 		throw new UnsupportedOperationException();
 	}
 
+	/**
+	 * 已测试
+	 */
 	@Override
 	public String spop(String key) {
 		// 随机选择一个shard
@@ -574,6 +656,9 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 		return srandmember(key, js);
 	}
 
+	/**
+	 * 已测试
+	 */
 	@Override
 	public Long srem(String key, String... members) {
 		if (members.length == 1) {

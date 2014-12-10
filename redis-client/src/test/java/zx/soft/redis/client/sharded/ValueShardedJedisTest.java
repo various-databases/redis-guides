@@ -49,7 +49,6 @@ public class ValueShardedJedisTest {
 	}
 
 	@Test
-	@Ignore
 	public void string01_testSet() {
 		shardedJedis.set(string_key[0], string_value[0]);
 		shardedJedis.set(string_key[1], string_value[1]);
@@ -126,13 +125,11 @@ public class ValueShardedJedisTest {
 	}
 
 	@Test
-	@Ignore
 	public void hash04_testHget() {
 		assertEquals(shardedJedis.hget("hash:set", "hash4"), "value004");
 	}
 
 	@Test
-	@Ignore
 	public void hash05_testHlen() {
 		assertEquals(shardedJedis.hlen("hash:set").longValue(), 5);
 	}
@@ -141,6 +138,17 @@ public class ValueShardedJedisTest {
 	@Ignore
 	public void hash06_testHkeys() {
 		System.out.println(shardedJedis.hkeys("hash:set").size());
+	}
+
+	@Test
+	public void hash07_testHsetnx() {
+		assertEquals(shardedJedis.hsetnx("hash:set", "hash10", "test").longValue(), 1L);
+		assertEquals(shardedJedis.hsetnx("hash:set", "hash10", "test01").longValue(), 0L);
+	}
+
+	@Test
+	public void hash08_testHvals() {
+		assertEquals(shardedJedis.hvals("hash:set").size(), 6);
 	}
 	//	@Test
 	//	public void testSadd() {
