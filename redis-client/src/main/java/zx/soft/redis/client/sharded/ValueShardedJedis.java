@@ -50,7 +50,7 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 	}
 
 	/**
-	 * add by Jimbo
+	 * added by Jimbo
 	 * 存在两种情况
 	 * 1：已经存在key，则在已经存在的值结尾加“value”字符串
 	 * 2：不存在key，创建key并将value存入key中
@@ -70,7 +70,7 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 	}
 
 	/**
-	 * add by Jimbo
+	 * added by Jimbo
 	 * 经测试
 	 */
 	@Override
@@ -89,7 +89,7 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 	}
 
 	/**
-	 * Add By Jimbo
+	 * added By Jimbo
 	 * 经测试
 	 */
 	@Override
@@ -108,7 +108,7 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 	}
 
 	/**
-	 * add by Jimbo
+	 * added by Jimbo
 	 *  根据一组key，删除对应的集和。
 	 *  对于同一个集和下面的数据可能分布式所有shard上，
 	 *  所以需要循环每个shard删除对应的key集和。
@@ -133,7 +133,7 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 	}
 
 	/**
-	 * add by Jimbo
+	 * added by Jimbo
 	 * 经测试
 	 */
 	@Override
@@ -149,7 +149,7 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 	}
 
 	/**
-	 * add by Jimbo
+	 * added by Jimbo
 	 * 为key设置超时时间
 	 */
 	@Override
@@ -162,7 +162,7 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 	}
 
 	/**
-	 * add by jimbo
+	 * added by jimbo
 	 */
 	@Override
 	public Long expireAt(String key, long unixTime) {
@@ -174,7 +174,7 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 	}
 
 	/**
-	 * add by jimbo
+	 * added by jimbo
 	 * 经测试
 	 */
 	@Override
@@ -190,7 +190,7 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 	}
 
 	/**
-	 * add by jimbo
+	 * added by jimbo
 	 */
 	@Override
 	public Boolean getbit(String key, long offset) {
@@ -207,7 +207,7 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 	}
 
 	/**
-	 * add by jimbo
+	 * added by jimbo
 	 * 经测试
 	 */
 	@Override
@@ -225,7 +225,7 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 	}
 
 	/**
-	 * add by Jimbo
+	 * added by Jimbo
 	 * 删除hash存储，中的key-value对
 	 */
 	@Override
@@ -238,7 +238,7 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 	}
 
 	/**
-	 * add by Jimbo
+	 * added by Jimbo
 	 * 判断hash存储中是否包含某一值
 	 * 经测试
 	 */
@@ -282,7 +282,7 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 	}
 
 	/**
-	 * add by Jimbo
+	 * added by Jimbo
 	 * 这里功能暂时不管
 	 */
 	@Override
@@ -298,7 +298,7 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 	}
 
 	/**
-	 * add by Jimbo
+	 * added by Jimbo
 	 * 未测试
 	 */
 	@SuppressWarnings("null")
@@ -315,7 +315,7 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 	}
 
 	/**
-	 * add by Jimbo
+	 * added by Jimbo
 	 * 已测试
 	 */
 	@Override
@@ -346,7 +346,7 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 	}
 
 	/**
-	 * add by Jimbo
+	 * added by Jimbo
 	 * return 如果hash中已经存在该field返回0
 	 * 			  如果不存在设置该值为value并返回1
 	 * 已测试
@@ -362,7 +362,7 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 	}
 
 	/**
-	 * add by Jimbo
+	 * added by Jimbo
 	 * 已测试
 	 */
 	@Override
@@ -375,7 +375,7 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 	}
 
 	/**
-	 * add by Jimbo
+	 * added by Jimbo
 	 *  已测试
 	 */
 	@Override
@@ -424,7 +424,7 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 	}
 
 	/**
-	 * add by Jimbo
+	 * added by Jimbo
 	 *
 	 */
 	@Override
@@ -513,7 +513,7 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 	}
 
 	/**
-	 * add by Jimbo
+	 * added by Jimbo
 	 * 已测试
 	 */
 	@Override
@@ -557,7 +557,7 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 	}
 
 	/**
-	 * add by Jimbo
+	 * added by Jimbo
 	 *  经测试
 	 */
 	@Override
@@ -877,9 +877,6 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 		return jedisMembersMap.entrySet();
 	}
 
-	/**
-	 * 从
-	 */
 	private String rpop(String key, List<Jedis> jedises) {
 		if (jedises.isEmpty()) {
 			return null;
@@ -966,7 +963,7 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 	}
 
 	/**
-	 * add by Jimbo
+	 * added by Jimbo
 	 */
 	@Override
 	public Long del(String key) {

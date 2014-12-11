@@ -150,6 +150,7 @@ public class ValueShardedJedisTest {
 	public void hash08_testHvals() {
 		assertEquals(shardedJedis.hvals("hash:set").size(), 6);
 	}
+
 	//	@Test
 	//	public void testSadd() {
 	//		assertEquals(0L, shardedJedis.sadd(set_key, value).longValue());

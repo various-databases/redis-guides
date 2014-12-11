@@ -16,6 +16,7 @@ import zx.soft.redis.client.common.Config;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ValueShardedJedisListTest {
+
 	ValueShardedJedis shardedJedis = null;
 
 	@Before
