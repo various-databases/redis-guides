@@ -7,6 +7,8 @@ import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.PooledObjectFactory;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisShardInfo;
@@ -20,6 +22,8 @@ import redis.clients.util.Pool;
  *
  */
 public class ValueShardedJedisPool extends Pool<ValueShardedJedis> {
+
+	private static Logger logger = LoggerFactory.getLogger(ValueShardedJedisPool.class);
 
 	public ValueShardedJedisPool(final GenericObjectPoolConfig poolConfig, List<JedisShardInfo> shards) {
 		this(poolConfig, shards, Hashing.MURMUR_HASH);
@@ -69,11 +73,11 @@ public class ValueShardedJedisPool extends Pool<ValueShardedJedis> {
 					try {
 						jedis.quit();
 					} catch (Exception e) {
-						//
+						logger.error("Exception:{}, StackTrace:{}", e.getMessage(), e.getStackTrace());
 					}
 					jedis.disconnect();
 				} catch (Exception e) {
-					//
+					logger.error("Exception:{}, StackTrace:{}", e.getMessage(), e.getStackTrace());
 				}
 			}
 		}
@@ -88,7 +92,8 @@ public class ValueShardedJedisPool extends Pool<ValueShardedJedis> {
 					}
 				}
 				return true;
-			} catch (Exception ex) {
+			} catch (Exception e) {
+				logger.error("Exception:{}, StackTrace:{}", e.getMessage(), e.getStackTrace());
 				return false;
 			}
 		}

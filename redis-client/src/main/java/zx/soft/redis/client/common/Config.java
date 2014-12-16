@@ -25,6 +25,7 @@ public class Config {
 			try (InputStream in = Config.class.getClassLoader().getResourceAsStream("cache-config.properties");) {
 				this.load(in);
 			} catch (IOException e) {
+				logger.error("Exception:{}, StackTrace:{}", e.getMessage(), e.getStackTrace());
 				throw new RuntimeException(e);
 			}
 		}
@@ -52,6 +53,7 @@ public class Config {
 			result.load(in);
 			return result;
 		} catch (Exception e) {
+			logger.error("Exception:{}, StackTrace:{}", e.getMessage(), e.getStackTrace());
 			throw new RuntimeException(e);
 		}
 	}

@@ -51,7 +51,7 @@ public class ManagerPersistHash implements ManagerHash {
 		try {
 			jedis.hset(keyName, field, System.currentTimeMillis() + "");
 		} catch (Exception e) {
-			logger.error("Exception:" + e);
+			logger.error("Exception:{}, StackTrace:{}", e.getMessage(), e.getStackTrace());
 		}
 	}
 
@@ -70,7 +70,7 @@ public class ManagerPersistHash implements ManagerHash {
 		try {
 			return jedis.hexists(keyName, field);
 		} catch (Exception e) {
-			logger.error("Exception:" + e);
+			logger.error("Exception:{}, StackTrace:{}", e.getMessage(), e.getStackTrace());
 			return Boolean.FALSE;
 		}
 	}
@@ -91,7 +91,7 @@ public class ManagerPersistHash implements ManagerHash {
 		try {
 			jedis.hdel(keyName, delFields.toArray(new String[delFields.size()]));
 		} catch (Exception e) {
-			logger.error("Exception:" + e);
+			logger.error("Exception:{}, StackTrace:{}", e.getMessage(), e.getStackTrace());
 		}
 	}
 

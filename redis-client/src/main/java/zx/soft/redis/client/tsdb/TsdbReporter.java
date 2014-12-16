@@ -59,7 +59,8 @@ public class TsdbReporter {
 			}
 			writer.flush();
 		} catch (Exception e) {
-			logger.warn("report to TSDB exception, host={}, port={}, errorMsg={}", host, port, e.getMessage());
+			logger.warn("Report to TSDB exception, host={}, port={}, errorMsg={}", host, port, e.getMessage());
+			logger.error("Exception:{}, StackTrace:{}", e.getMessage(), e.getStackTrace());
 		}
 	}
 

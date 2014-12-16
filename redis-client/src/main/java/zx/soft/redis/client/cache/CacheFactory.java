@@ -34,7 +34,7 @@ public class CacheFactory {
 						}
 					});
 		} catch (Exception e) {
-			logger.error("CacheFactory Exception is " + e);
+			logger.error("Exception:{}, StackTrace:{}", e.getMessage(), e.getStackTrace());
 			throw new RuntimeException(e);
 		}
 	}

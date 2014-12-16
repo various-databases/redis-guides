@@ -75,7 +75,7 @@ public class ManagerExpiredHash implements ManagerHash {
 			jedis.set(field, ONE);
 			jedis.pexpire(field, expire);
 		} catch (Exception e) {
-			logger.error("Exception: " + e);
+			logger.error("Exception:{}, StackTrace:{}", e.getMessage(), e.getStackTrace());
 		}
 	}
 
