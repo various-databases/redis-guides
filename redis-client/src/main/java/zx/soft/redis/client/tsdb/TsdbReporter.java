@@ -13,6 +13,8 @@ import java.util.TimerTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import zx.soft.utils.log.LogbackUtil;
+
 /**
  * 数据统计报表类
  * 
@@ -60,7 +62,7 @@ public class TsdbReporter {
 			writer.flush();
 		} catch (Exception e) {
 			logger.warn("Report to TSDB exception, host={}, port={}, errorMsg={}", host, port, e.getMessage());
-			logger.error("Exception:{}, StackTrace:{}", e.getMessage(), e.getStackTrace());
+			logger.error("Exception:{}", LogbackUtil.expection2Str(e));
 		}
 	}
 

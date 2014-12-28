@@ -7,6 +7,8 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import zx.soft.utils.log.LogbackUtil;
+
 /**
  * 配置文件信息读取类，读取特定
  * 
@@ -25,7 +27,7 @@ public class Config {
 			try (InputStream in = Config.class.getClassLoader().getResourceAsStream("cache-config.properties");) {
 				this.load(in);
 			} catch (IOException e) {
-				logger.error("Exception:{}, StackTrace:{}", e.getMessage(), e.getStackTrace());
+				logger.error("Exception:{}", LogbackUtil.expection2Str(e));
 				throw new RuntimeException(e);
 			}
 		}
@@ -53,7 +55,7 @@ public class Config {
 			result.load(in);
 			return result;
 		} catch (Exception e) {
-			logger.error("Exception:{}, StackTrace:{}", e.getMessage(), e.getStackTrace());
+			logger.error("Exception:{}", LogbackUtil.expection2Str(e));
 			throw new RuntimeException(e);
 		}
 	}

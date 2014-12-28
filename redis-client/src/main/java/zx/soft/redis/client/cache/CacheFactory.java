@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import redis.clients.jedis.exceptions.JedisConnectionException;
 import zx.soft.redis.client.common.Config;
+import zx.soft.utils.log.LogbackUtil;
 import zx.soft.utils.retry.RetryHandler;
 
 /**
@@ -34,7 +35,7 @@ public class CacheFactory {
 						}
 					});
 		} catch (Exception e) {
-			logger.error("Exception:{}, StackTrace:{}", e.getMessage(), e.getStackTrace());
+			logger.error("Exception:{}", LogbackUtil.expection2Str(e));
 			throw new RuntimeException(e);
 		}
 	}

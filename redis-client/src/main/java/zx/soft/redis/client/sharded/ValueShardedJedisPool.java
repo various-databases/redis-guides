@@ -14,6 +14,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisShardInfo;
 import redis.clients.util.Hashing;
 import redis.clients.util.Pool;
+import zx.soft.utils.log.LogbackUtil;
 
 /**
  * 基于值分片的Redis池
@@ -73,11 +74,11 @@ public class ValueShardedJedisPool extends Pool<ValueShardedJedis> {
 					try {
 						jedis.quit();
 					} catch (Exception e) {
-						logger.error("Exception:{}, StackTrace:{}", e.getMessage(), e.getStackTrace());
+						logger.error("Exception:{}", LogbackUtil.expection2Str(e));
 					}
 					jedis.disconnect();
 				} catch (Exception e) {
-					logger.error("Exception:{}, StackTrace:{}", e.getMessage(), e.getStackTrace());
+					logger.error("Exception:{}", LogbackUtil.expection2Str(e));
 				}
 			}
 		}
@@ -93,7 +94,7 @@ public class ValueShardedJedisPool extends Pool<ValueShardedJedis> {
 				}
 				return true;
 			} catch (Exception e) {
-				logger.error("Exception:{}, StackTrace:{}", e.getMessage(), e.getStackTrace());
+				logger.error("Exception:{}", LogbackUtil.expection2Str(e));
 				return false;
 			}
 		}

@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import redis.clients.jedis.Jedis;
+import zx.soft.utils.log.LogbackUtil;
 
 /**
  * 管理有生存周期的Hash表
@@ -75,7 +76,7 @@ public class ManagerExpiredHash implements ManagerHash {
 			jedis.set(field, ONE);
 			jedis.pexpire(field, expire);
 		} catch (Exception e) {
-			logger.error("Exception:{}, StackTrace:{}", e.getMessage(), e.getStackTrace());
+			logger.error("Exception:{}", LogbackUtil.expection2Str(e));
 		}
 	}
 

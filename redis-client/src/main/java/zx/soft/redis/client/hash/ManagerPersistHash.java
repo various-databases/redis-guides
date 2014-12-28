@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import redis.clients.jedis.Jedis;
+import zx.soft.utils.log.LogbackUtil;
 
 /**
  * 管理有生存周期的Hash表
@@ -51,7 +52,7 @@ public class ManagerPersistHash implements ManagerHash {
 		try {
 			jedis.hset(keyName, field, System.currentTimeMillis() + "");
 		} catch (Exception e) {
-			logger.error("Exception:{}, StackTrace:{}", e.getMessage(), e.getStackTrace());
+			logger.error("Exception:{}", LogbackUtil.expection2Str(e));
 		}
 	}
 
@@ -70,7 +71,7 @@ public class ManagerPersistHash implements ManagerHash {
 		try {
 			return jedis.hexists(keyName, field);
 		} catch (Exception e) {
-			logger.error("Exception:{}, StackTrace:{}", e.getMessage(), e.getStackTrace());
+			logger.error("Exception:{}", LogbackUtil.expection2Str(e));
 			return Boolean.FALSE;
 		}
 	}
@@ -91,7 +92,7 @@ public class ManagerPersistHash implements ManagerHash {
 		try {
 			jedis.hdel(keyName, delFields.toArray(new String[delFields.size()]));
 		} catch (Exception e) {
-			logger.error("Exception:{}, StackTrace:{}", e.getMessage(), e.getStackTrace());
+			logger.error("Exception:{}", LogbackUtil.expection2Str(e));
 		}
 	}
 
