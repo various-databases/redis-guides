@@ -16,7 +16,7 @@
 
 	<modules>
 		<module>redis-client</module>
-		<module>redis-demo</module>
+		<module>redis-ha</module>
 	</modules>
 
 	<dependencies>

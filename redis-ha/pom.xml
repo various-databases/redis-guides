@@ -9,8 +9,8 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<artifactId>redis-client</artifactId>
-	<name>Redis Client</name>
+	<artifactId>redis-ha</artifactId>
+	<name>Redis High Availability</name>
 
 	<dependencies>
 		<dependency>
@@ -69,21 +69,5 @@
 		</plugins>
 		<finalName>${project.artifactId}-${project.version}</finalName>
 	</build>
-
-	<reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-pmd-plugin</artifactId>
-				<version>3.2</version>
-				<configuration>
-					<linkXref>true</linkXref>
-					<sourceEncoding>utf-8</sourceEncoding>
-					<minimumTokens>100</minimumTokens>
-					<targetJdk>1.7</targetJdk>
-				</configuration>
-			</plugin>
-		</plugins>
-	</reporting>
 
 </project>
