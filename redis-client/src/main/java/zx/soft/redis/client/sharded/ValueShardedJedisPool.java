@@ -116,4 +116,25 @@ public class ValueShardedJedisPool extends Pool<ValueShardedJedis> {
 
 	}
 
+	@Override
+	public ValueShardedJedis getResource() {
+		ValueShardedJedis jedis = super.getResource();
+		return jedis;
+	}
+
+	@Override
+	public void returnBrokenResource(final ValueShardedJedis resource) {
+		if (resource != null) {
+			returnBrokenResourceObject(resource);
+		}
+	}
+
+	@Override
+	public void returnResource(final ValueShardedJedis resource) {
+		if (resource != null) {
+			resource.close();
+			returnResourceObject(resource);
+		}
+	}
+
 }

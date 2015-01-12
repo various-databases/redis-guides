@@ -50,6 +50,20 @@ public class ValueShardedJedis extends Sharded<Jedis, JedisShardInfo> implements
 	}
 
 	/**
+	 * 关闭所有资源
+	 */
+	public void close() {
+		if (allShards != null) {
+			for (Jedis jedis : allShards) {
+				if (jedis.isConnected()) {
+					jedis.disconnect();
+				}
+				jedis.close();
+			}
+		}
+	}
+
+	/**
 	 * added by Jimbo
 	 * 存在两种情况
 	 * 1：已经存在key，则在已经存在的值结尾加“value”字符串
