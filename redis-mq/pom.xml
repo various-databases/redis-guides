@@ -11,7 +11,7 @@
 
 	<artifactId>redis-mq</artifactId>
 	<name>Redis MQ</name>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>redis.clients</groupId>
@@ -42,6 +42,13 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<!-- 其他包 -->
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-all</artifactId>
+			<version>4.0.12.Final</version>
+			<scope>compile</scope>
 		</dependency>
 		<!-- 测试包 -->
 		<dependency>
@@ -84,5 +91,5 @@
 
 		<finalName>${project.artifactId}-${project.version}</finalName>
 	</build>
-	
+
 </project>
